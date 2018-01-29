@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+export PSEUDOCRON_INCLUDE="${PSEUDOCRON_INCLUDE-/usr/local/lib}"
+
+MACHTYPE="$(uname -m)"
+case "${MACHTYPE}" in
+  armv6l) ;&
+  armv7l) MACHTYPE=arm ;;
+  *) ;;
+esac
+
+LDFLAGS="-I$PSEUDOCRON_INCLUDE/kernel-headers/generic/include -I$PSEUDOCRON_INCLUDE/kernel-headers/${MACHTYPE}/include" CC="musl-gcc -static -Os" make $@
