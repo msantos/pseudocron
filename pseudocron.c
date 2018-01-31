@@ -15,6 +15,7 @@
  */
 
 #define _XOPEN_SOURCE
+#define _XOPEN_SOURCE_EXTENDED 1
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

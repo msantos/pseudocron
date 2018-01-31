@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 #ifdef PSEUDOCRON_SANDBOX_pledge
+#include <unistd.h>
+
     int
 sandbox_init()
 {
