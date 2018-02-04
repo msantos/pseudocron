@@ -16,14 +16,12 @@ ifeq ($(UNAME_SYS), Linux)
               -fno-strict-aliasing
 	  PSEUDOCRON_SANDBOX ?= seccomp
 else ifeq ($(UNAME_SYS), OpenBSD)
-    CFLAGS ?= -DHAVE_STRTONUM \
-              -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
+    CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
               -fno-strict-aliasing
 	  PSEUDOCRON_SANDBOX ?= pledge
 else ifeq ($(UNAME_SYS), FreeBSD)
-    CFLAGS ?= -DHAVE_STRTONUM \
-              -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
+    CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
               -fno-strict-aliasing
 	  PSEUDOCRON_SANDBOX ?= capsicum
