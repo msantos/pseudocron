@@ -38,12 +38,10 @@ static void usage();
 
 extern char *__progname;
 
-typedef const struct {
+static struct pseudocron_alias {
   const char *name;
   const char *timespec;
-} pseudocron_alias;
-
-static pseudocron_alias pseudocron_aliases[] = {
+} pseudocron_aliases[] = {
   {"@reboot",   "0 * * * * *"},
   {"@yearly",   "0 0 0 1 1 *"},
   {"@annually", "0 0 0 1 1 *"},
@@ -269,7 +267,7 @@ timestamp(const char *s)
   static const char *
 alias_to_timespec(const char *name)
 {
-  pseudocron_alias *ap = NULL;
+  struct pseudocron_alias *ap = NULL;
 
   for (ap = pseudocron_aliases; ap->name != NULL; ap++) {
     if (strcmp(name, ap->name) == 0) {
