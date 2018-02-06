@@ -183,8 +183,11 @@ main(int argc, char *argv[])
   if (opt & OPT_PRINT)
     (void)printf("%.f\n", diff);
 
-  if (!(opt & OPT_DRYRUN))
-    sleep(diff);
+  if (!(opt & OPT_DRYRUN)) {
+    int sleepfor = diff;
+    while (sleepfor > 0)
+      sleepfor = sleep(sleepfor);
+  }
 
   if (verbose > 1) {
     now = time(NULL);
