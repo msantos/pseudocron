@@ -19,12 +19,14 @@ else ifeq ($(UNAME_SYS), OpenBSD)
     CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
               -fno-strict-aliasing
-	  PSEUDOCRON_SANDBOX ?= pledge
+    LDFLAGS += -Wno-missing-braces
+    PSEUDOCRON_SANDBOX ?= pledge
 else ifeq ($(UNAME_SYS), FreeBSD)
     CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
               -fno-strict-aliasing
-	  PSEUDOCRON_SANDBOX ?= capsicum
+    LDFLAGS += -Wno-missing-braces
+    PSEUDOCRON_SANDBOX ?= capsicum
 endif
 
 RM ?= rm
