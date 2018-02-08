@@ -102,10 +102,63 @@ Writing a batch job:
 
 # BUILDING
 
-# SANDBOX
+## Quick Install
+
+    make
+
+## Selecting a Sandbox
+
+    PSEUDOCRON_SANDBOX=null make clean all
+
+## Using musl libc
+
+    ./musl-make
+
+    # linux seccomp sandbox: requires kernel headers
+
+    # clone the kernel headers somewhere
+    cd /path/to/dir
+    git clone https://github.com/sabotage-linux/kernel-headers.git
+
+    # then compile
+    PSEUDOCRON_INCLUDE=/path/to/dir ./musl-make clean all
+
+## Sandbox
+
+Setting the `PSEUDOCRON_SANDBOX` environment variable controls which
+sandbox is used. The available sandboxes are:
+
+* seccomp: linux
+
+* pledge: openbsd
+
+* capsicum: freebsd
+
+* rlimit: all
+
+* null: all
+
+For example, to force using the rlimit sandbox:
+
+    PSEUDOCRON_SANDBOX=rlimit make clean all
+
+The `null` sandbox disables sandboxing. It can be used for debugging
+problems with a sandbox.
+
+    PSEUDOCRON_SANDBOX=null make clean all
+    strace -o null.trace ./pseudcron ...
+
+    PSEUDOCRON_SANDBOX=seccomp make clean all
+    strace -o seccomp.trace ./pseudcron ...
 
 # ALTERNATIVES
 
+* [runwhen](http://code.dogmap.org/runwhen/)
+
+* [supercronic](https://github.com/aptible/supercronic)
+
+* [uschedule](https://ohse.de/uwe/uschedule.html)
+
 # SEE ALSO
 
-_crontab_(5), sleep(1)
+_crontab_(5), _sleep_(1)
