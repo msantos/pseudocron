@@ -147,7 +147,7 @@ main(int argc, char *argv[])
 
     case 1:
       rv = snprintf(arg, sizeof(arg), "%s", argv[0]);
-      if (rv < 0 || rv > sizeof(arg))
+      if (rv < 0 || rv >= sizeof(arg))
         errx(EXIT_FAILURE, "timespec exceeds maximum length: %zu",
             sizeof(arg));
       break;
@@ -232,9 +232,6 @@ arg_to_timespec(const char *arg, size_t arglen, char *buf, size_t buflen)
 
   switch (n) {
     case 1:
-      if (*arg != '@')
-        return -1;
-
       timespec = alias_to_timespec(arg);
 
       if (timespec == NULL)
@@ -253,7 +250,7 @@ arg_to_timespec(const char *arg, size_t arglen, char *buf, size_t buflen)
       break;
   }
 
-  return (rv < 0 || rv > buflen) ? -1 : 0;
+  return (rv < 0 || rv >= buflen) ? -1 : 0;
 }
 
   static time_t
