@@ -14,19 +14,25 @@ ifeq ($(UNAME_SYS), Linux)
     CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
               -fno-strict-aliasing
+    LDFLAGS += -Wl,-z,relro,-z,now
 	  PSEUDOCRON_SANDBOX ?= seccomp
 else ifeq ($(UNAME_SYS), OpenBSD)
     CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
               -fno-strict-aliasing
-    LDFLAGS += -Wno-missing-braces
+    LDFLAGS += -Wno-missing-braces -Wl,-z,relro,-z,now
     PSEUDOCRON_SANDBOX ?= pledge
 else ifeq ($(UNAME_SYS), FreeBSD)
     CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
               -fno-strict-aliasing
-    LDFLAGS += -Wno-missing-braces
+    LDFLAGS += -Wno-missing-braces -Wl,-z,relro,-z,now
     PSEUDOCRON_SANDBOX ?= capsicum
+else ifeq ($(UNAME_SYS), Darwin)
+    CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
+              -Wformat -Werror=format-security \
+              -fno-strict-aliasing
+    LDFLAGS += -Wno-missing-braces
 endif
 
 RM ?= rm
@@ -39,7 +45,7 @@ CFLAGS += $(PSEUDOCRON_CFLAGS) \
           -DPSEUDOCRON_SANDBOX=\"$(PSEUDOCRON_SANDBOX)\" \
           -DPSEUDOCRON_SANDBOX_$(PSEUDOCRON_SANDBOX)
 
-LDFLAGS += $(PSEUDOCRON_LDFLAGS) -Wl,-z,relro,-z,now
+LDFLAGS += $(PSEUDOCRON_LDFLAGS)
 
 all: $(PROG)
 
