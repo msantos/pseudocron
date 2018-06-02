@@ -5,8 +5,8 @@
 cat << EOF
 $output
 EOF
-  [ "$status" == "0" ]
-  [ "$output" == "106902" ]
+  [ "$status" -eq 0 ]
+  [ "$output" -eq 106902 ]
 }
 
 @test "crontab format: seconds scheduled" {
@@ -14,8 +14,8 @@ EOF
 cat << EOF
 $output
 EOF
-  [ "$status" == "0" ]
-  [ "$output" == "106902" ]
+  [ "$status" -eq 0 ]
+  [ "$output" -eq 106902 ]
 }
 
 @test "crontab format: space delimited fields" {
@@ -23,7 +23,7 @@ EOF
 cat << EOF
 $output
 EOF
-  [ "$status" == "0" ]
+  [ "$status" -eq 0 ]
 }
 
 @test "crontab format: no tabs delimitng fields" {
@@ -31,8 +31,8 @@ EOF
 cat << EOF
 $output
 EOF
-  [ "$status" == "1" ]
-  [ "$output" == "pseudocron: invalid crontab timespec: Unsigned integer parse error 1" ]
+  [ "$status" -eq 1 ]
+  [ "$output" = "pseudocron: invalid crontab timespec: Unsigned integer parse error 1" ]
 }
 
 @test "crontab format: invalid timespec" {
@@ -40,8 +40,8 @@ EOF
 cat << EOF
 $output
 EOF
-  [ "$status" == "1" ]
-  [ "$output" == "pseudocron: invalid crontab timespec: Invalid number of fields, expression must consist of 6 fields" ]
+  [ "$status" -eq 1 ]
+  [ "$output" = "pseudocron: invalid crontab timespec: Invalid number of fields, expression must consist of 6 fields" ]
 }
 
 @test "crontab alias: daily" {
@@ -49,8 +49,8 @@ EOF
 cat << EOF
 $output
 EOF
-  [ "$status" == "0" ]
-  [ "$output" == "20502" ]
+  [ "$status" -eq 0 ]
+  [ "$output" -eq 20502 ]
 }
 
 @test "crontab alias: invalid alias" {
@@ -58,8 +58,8 @@ EOF
 cat << EOF
 $output
 EOF
-  [ "$status" == "1" ]
-  [ "$output" == "pseudocron: invalid crontab timespec" ]
+  [ "$status" -eq 1 ]
+  [ "$output" = "pseudocron: invalid crontab timespec" ]
 }
 
 @test "crontab alias: timespec too long" {
@@ -67,8 +67,8 @@ EOF
 cat << EOF
 $output
 EOF
-  [ "$status" == "1" ]
-  [ "$output" == "pseudocron: timespec exceeds maximum length: 252" ]
+  [ "$status" -eq 1 ]
+  [ "$output" = "pseudocron: timespec exceeds maximum length: 252" ]
 }
 
 @test "crontab format: stdin: minutes scheduled" {
@@ -76,8 +76,8 @@ EOF
 cat << EOF
 $output
 EOF
-  [ "$status" == "0" ]
-  [ "$output" == "106902" ]
+  [ "$status" -eq 0 ]
+  [ "$output" -eq 106902 ]
 }
 
 @test "crontab format: stdin: alias" {
@@ -85,6 +85,6 @@ EOF
 cat << EOF
 $output
 EOF
-  [ "$status" == "0" ]
-  [ "$output" == "2502" ]
+  [ "$status" -eq 0 ]
+  [ "$output" -eq 2502 ]
 }

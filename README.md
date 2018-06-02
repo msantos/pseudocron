@@ -91,7 +91,7 @@ Writing a batch job:
 -v, --verbose
 :	Output the calculated dates to stderr.
 
--h, help
+-h, --help
 :	display usage
 
 --timestamp *YY*-*MM*-*DD* *hh*-*mm*-*ss*
