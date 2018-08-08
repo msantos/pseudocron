@@ -267,7 +267,7 @@ timestamp(const char *s)
   static const char *
 alias_to_timespec(const char *name)
 {
-  struct pseudocron_alias *ap = NULL;
+  struct pseudocron_alias *ap;
 
   for (ap = pseudocron_aliases; ap->name != NULL; ap++) {
     if (strcmp(name, ap->name) == 0) {
