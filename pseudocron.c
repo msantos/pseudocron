@@ -261,6 +261,8 @@ timestamp(const char *s)
   if (strptime(s, "%Y-%m-%d %T", &tm) == NULL)
     return -1;
 
+  tm.tm_isdst = -1;
+
   return mktime(&tm);
 }
 
