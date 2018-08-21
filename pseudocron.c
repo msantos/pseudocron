@@ -78,6 +78,7 @@ main(int argc, char *argv[])
   const char *errbuf = NULL;
   char buf[255] = {0};
   char arg[252] = {0};
+  char *p;
   time_t now;
   time_t next;
   double diff;
@@ -156,6 +157,10 @@ main(int argc, char *argv[])
       usage();
       break;
   }
+
+  /* replace tabs with spaces */
+  for (p = arg; *p != '\0'; p++)
+    if (*p == '\t') *p = ' ';
 
   if (arg_to_timespec(arg, sizeof(arg), buf, sizeof(buf)) < 0)
     errx(EXIT_FAILURE, "invalid crontab timespec");

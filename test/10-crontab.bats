@@ -26,13 +26,12 @@ EOF
   [ "$status" -eq 0 ]
 }
 
-@test "crontab format: no tabs delimitng fields" {
+@test "crontab format: tab delimited fields" {
   run pseudocron -n "*	* * * * *"
 cat << EOF
 $output
 EOF
-  [ "$status" -eq 1 ]
-  [ "$output" = "pseudocron: invalid crontab timespec: Unsigned integer parse error 1" ]
+  [ "$status" -eq 0 ]
 }
 
 @test "crontab format: invalid timespec" {
