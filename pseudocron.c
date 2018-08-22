@@ -177,8 +177,8 @@ main(int argc, char *argv[])
     err(EXIT_FAILURE, "time");
 
   if (verbose > 0) {
-    (void)fprintf(stderr, "now[%ld]=%s", now, ctime(&now));
-    (void)fprintf(stderr, "next[%ld]=%s", next, ctime(&next));
+    (void)fprintf(stderr, "now[%lld]=%s", (long long)now, ctime(&now));
+    (void)fprintf(stderr, "next[%lld]=%s", (long long)next, ctime(&next));
   }
 
   diff = difftime(next, now);
@@ -198,7 +198,7 @@ main(int argc, char *argv[])
     now = time(NULL);
     if (now == -1)
       err(EXIT_FAILURE, "time");
-    (void)fprintf(stderr, "exit[%ld]=%s", now, ctime(&now));
+    (void)fprintf(stderr, "exit[%lld]=%s", (long long)now, ctime(&now));
   }
 
   return 0;
