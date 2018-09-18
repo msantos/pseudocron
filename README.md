@@ -112,9 +112,10 @@ Writing a batch job:
 
 ## Using musl libc
 
-    ./musl-make
+    ## Using the rlimit sandbox
+    PSEUDOCRON_SANDBOX=rlimit ./musl-make
 
-    # linux seccomp sandbox: requires kernel headers
+    ## linux seccomp sandbox: requires kernel headers
 
     # clone the kernel headers somewhere
     cd /path/to/dir
