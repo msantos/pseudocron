@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "pseudocron.h"
 #ifdef PSEUDOCRON_SANDBOX_rlimit
 #include <time.h>
 #include <sys/resource.h>
