@@ -38,7 +38,7 @@ endif
 RM ?= rm
 
 PSEUDOCRON_SANDBOX ?= rlimit
-PSEUDOCRON_CFLAGS ?= -g -Wall -fwrapv
+PSEUDOCRON_CFLAGS ?= -g -Wall -fwrapv -pedantic
 
 CFLAGS += $(PSEUDOCRON_CFLAGS) \
           -DCRON_USE_LOCAL_TIME \
