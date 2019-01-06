@@ -13,24 +13,28 @@ UNAME_SYS := $(shell uname -s)
 ifeq ($(UNAME_SYS), Linux)
     CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
+              -pie -fPIE \
               -fno-strict-aliasing
-    LDFLAGS += -Wl,-z,relro,-z,now
+    LDFLAGS += -Wl,-z,relro,-z,now -Wl,-z,noexecstack
 	  PSEUDOCRON_SANDBOX ?= seccomp
 else ifeq ($(UNAME_SYS), OpenBSD)
     CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
+              -pie -fPIE \
               -fno-strict-aliasing
-    LDFLAGS += -Wno-missing-braces -Wl,-z,relro,-z,now
+    LDFLAGS += -Wno-missing-braces -Wl,-z,relro,-z,now -Wl,-z,noexecstack
     PSEUDOCRON_SANDBOX ?= pledge
 else ifeq ($(UNAME_SYS), FreeBSD)
     CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
+              -pie -fPIE \
               -fno-strict-aliasing
-    LDFLAGS += -Wno-missing-braces -Wl,-z,relro,-z,now
+    LDFLAGS += -Wno-missing-braces -Wl,-z,relro,-z,now -Wl,-z,noexecstack
     PSEUDOCRON_SANDBOX ?= capsicum
 else ifeq ($(UNAME_SYS), Darwin)
     CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
+              -pie -fPIE \
               -fno-strict-aliasing
     LDFLAGS += -Wno-missing-braces
 endif
