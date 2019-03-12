@@ -88,7 +88,6 @@ EOF
   [ "$output" -eq 2502 ]
 }
 
-
 @test "timestamp: daylight savings" {
   run pseudocron -np --timestamp "2018-03-12 1:55:00" "15 2 * * *"
 cat << EOF
@@ -96,4 +95,12 @@ $output
 EOF
   [ "$status" -eq 0 ]
   [ "$output" -eq 1200 ]
+}
+
+@test "crontab format: spring daylight savings" {
+  run pseudocron -np --timestamp "2019-03-09 11:43:00" "15 11 * * *"
+cat << EOF
+$output
+EOF
+  [ "$status" -eq 0 ]
 }
