@@ -23,6 +23,7 @@
 #include <getopt.h>
 #include <time.h>
 #include <string.h>
+#include <errno.h>
 
 #include "ccronexpr.h"
 #include "pseudocron.h"
@@ -90,12 +91,12 @@ main(int argc, char *argv[])
   /* initialize local time before entering sandbox */
   now = time(NULL);
   if (now == -1)
-    err(EXIT_FAILURE, "time");
+    err(EXIT_FAILURE, "error: time");
 
   (void)localtime(&now);
 
   if (sandbox_init() < 0)
-    err(3, "sandbox_init");
+    err(3, "error: sandbox_init");
 
   while ((ch = getopt_long(argc, argv, "hnpv", long_options, NULL)) != -1) {
     switch (ch) {
@@ -118,7 +119,7 @@ main(int argc, char *argv[])
       case OPT_TIMESTAMP:
         now = timestamp(optarg);
         if (now == -1)
-          errx(EXIT_FAILURE, "invalid timestamp: %s", optarg);
+          errx(EXIT_FAILURE, "error: invalid timestamp: %s", optarg);
         break;
 
       case 'h':
@@ -138,7 +139,7 @@ main(int argc, char *argv[])
         usage();
 
       if (read(0, arg, sizeof(arg)-1) < 0)
-        err(EXIT_FAILURE, "read failure");
+        err(EXIT_FAILURE, "error: read failure");
 
       nl = strchr(arg, '\n');
       if (nl != NULL)
@@ -149,7 +150,7 @@ main(int argc, char *argv[])
     case 1:
       rv = snprintf(arg, sizeof(arg), "%s", argv[0]);
       if (rv < 0 || rv >= sizeof(arg))
-        errx(EXIT_FAILURE, "timespec exceeds maximum length: %zu",
+        errx(EXIT_FAILURE, "error: timespec exceeds maximum length: %zu",
             sizeof(arg));
       break;
 
@@ -163,18 +164,19 @@ main(int argc, char *argv[])
     if (*p == '\t') *p = ' ';
 
   if (arg_to_timespec(arg, sizeof(arg), buf, sizeof(buf)) < 0)
-    errx(EXIT_FAILURE, "invalid crontab timespec");
+    errx(EXIT_FAILURE, "error: invalid crontab timespec");
 
   if (verbose > 1)
     (void)fprintf(stderr, "crontab=%s\n", buf);
 
   cron_parse_expr(buf, &expr, &errbuf);
   if (errbuf)
-    errx(EXIT_FAILURE, "invalid crontab timespec: %s", errbuf);
+    errx(EXIT_FAILURE, "error: invalid crontab timespec: %s", errbuf);
 
   next = cron_next(&expr, now);
   if (next == -1)
-    err(EXIT_FAILURE, "time");
+    errx(EXIT_FAILURE, "error: cron_next: next scheduled interval: %s",
+            errno == 0 ? "invalid timespec" : strerror(errno));
 
   if (verbose > 0) {
     (void)fprintf(stderr, "now[%lld]=%s", (long long)now, ctime(&now));
@@ -183,7 +185,7 @@ main(int argc, char *argv[])
 
   diff = difftime(next, now);
   if (diff < 0)
-    errx(EXIT_FAILURE, "difftime: %.f", diff);
+    errx(EXIT_FAILURE, "error: difftime: negative duration: %.f seconds", diff);
 
   if (opt & OPT_PRINT)
     (void)printf("%.f\n", diff);
@@ -197,7 +199,7 @@ main(int argc, char *argv[])
   if (verbose > 1) {
     now = time(NULL);
     if (now == -1)
-      err(EXIT_FAILURE, "time");
+      err(EXIT_FAILURE, "error: time");
     (void)fprintf(stderr, "exit[%lld]=%s", (long long)now, ctime(&now));
   }
 

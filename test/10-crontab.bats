@@ -40,7 +40,7 @@ cat << EOF
 $output
 EOF
   [ "$status" -eq 1 ]
-  [ "$output" = "pseudocron: invalid crontab timespec: Invalid number of fields, expression must consist of 6 fields" ]
+  [ "$output" = "pseudocron: error: invalid crontab timespec: Invalid number of fields, expression must consist of 6 fields" ]
 }
 
 @test "crontab alias: daily" {
@@ -58,7 +58,7 @@ cat << EOF
 $output
 EOF
   [ "$status" -eq 1 ]
-  [ "$output" = "pseudocron: invalid crontab timespec" ]
+  [ "$output" = "pseudocron: error: invalid crontab timespec" ]
 }
 
 @test "crontab alias: timespec too long" {
@@ -67,7 +67,7 @@ cat << EOF
 $output
 EOF
   [ "$status" -eq 1 ]
-  [ "$output" = "pseudocron: timespec exceeds maximum length: 252" ]
+  [ "$output" = "pseudocron: error: timespec exceeds maximum length: 252" ]
 }
 
 @test "crontab format: stdin: minutes scheduled" {
@@ -103,4 +103,12 @@ cat << EOF
 $output
 EOF
   [ "$status" -eq 0 ]
+}
+
+@test "crontab format: invalid day of month" {
+  run pseudocron -np --timestamp "2019-03-09 11:43:00" "* * * 30 2 *"
+cat << EOF
+$output
+EOF
+  [ "$status" -eq 1 ]
 }
