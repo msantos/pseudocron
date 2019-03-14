@@ -97,6 +97,15 @@ EOF
   [ "$output" -eq 1200 ]
 }
 
+@test "timestamp: accept epoch seconds" {
+  run pseudocron -np --timestamp "@1520834100" "15 2 * * *"
+cat << EOF
+$output
+EOF
+  [ "$status" -eq 0 ]
+  [ "$output" -eq 1200 ]
+}
+
 @test "crontab format: spring daylight savings" {
   run pseudocron -np --timestamp "2019-03-09 11:43:00" "15 11 * * *"
 cat << EOF

@@ -265,8 +265,19 @@ timestamp(const char *s)
 {
   struct tm tm = {0};
 
-  if (strptime(s, "%Y-%m-%d %T", &tm) == NULL)
-    return -1;
+  switch (s[0]) {
+    case '@':
+      if (strptime(s+1, "%s", &tm) == NULL)
+        return -1;
+
+      break;
+
+    default:
+      if (strptime(s, "%Y-%m-%d %T", &tm) == NULL)
+        return -1;
+
+      break;
+  }
 
   tm.tm_isdst = -1;
 
@@ -295,7 +306,7 @@ usage()
     "-n, --dryrun           do nothing\n"
     "-p, --print            output seconds to next timespec\n"
     "-v, --verbose          verbose mode\n"
-    "    --timestamp <YY-MM-DD hh-mm-ss>\n"
+    "    --timestamp <YY-MM-DD hh-mm-ss|@epoch>\n"
     "                       provide an initial time\n"
     "    --stdin            read crontab from stdin\n",
     PSEUDOCRON_VERSION,
