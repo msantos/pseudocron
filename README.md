@@ -21,19 +21,25 @@ cron expressions are parsed using
 
 * safe
 
-    No setuid binaries required or processes running as root.
+    No setuid binaries or processes running as root.
 
-  	pseudocron operations are sandboxed.
+	pseudocron operations are sandboxed. It cannot open files
+	or sockets or signal processes. The only ways pseudocron can
+	interact with other processes is via stdin/stdout/stderr and
+	the process exit value.
 
 * container friendly
 
-    pseudocron runs as the container user and does not need to modify the
-    filesystem. pseudocron is meant to run in an automated environment
-    without user intervention. Jobs won't pile up if the run time of
-    the task exceeds the time spec increment.
+    pseudocron runs as a normal user without any special privileges.
+    It does not need to modify the filesystem. pseudocron is meant to
+    run in an automated environment without user intervention.
 
-    Jobs run in the foreground without clearing the application
-    environment or interfering with stdio.
+    Since processes run sequentially and synchronously, jobs won't pile
+    up if the run time of the task exceeds the time spec increment unless
+    specifically requested to run in the background.
+
+    pseudocron does not modify the application environment or interfere
+    with stdio.
 
 The standard crontab(5) expressions are supported. The seconds field
 is optional:
@@ -94,7 +100,7 @@ Writing a batch job:
 -h, --help
 :	display usage
 
---timestamp *YY*-*MM*-*DD* *hh*-*mm*-*ss*
+--timestamp *YY*-*MM*-*DD* *hh*-*mm*-*ss*|*@seconds*
 :	Use *timestamp* for the initial start time instead of now.
 
 --stdin
