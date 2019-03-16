@@ -191,7 +191,7 @@ main(int argc, char *argv[])
     (void)printf("%.f\n", diff);
 
   if (!(opt & OPT_DRYRUN)) {
-    int sleepfor = diff;
+    unsigned int sleepfor = diff > UINT32_MAX ? UINT32_MAX : (unsigned int)diff;
     while (sleepfor > 0)
       sleepfor = sleep(sleepfor);
   }
