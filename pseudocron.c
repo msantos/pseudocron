@@ -24,6 +24,7 @@
 #include <time.h>
 #include <string.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include "ccronexpr.h"
 #include "pseudocron.h"
@@ -161,7 +162,7 @@ main(int argc, char *argv[])
 
   /* replace tabs with spaces */
   for (p = arg; *p != '\0'; p++)
-    if (*p == '\t') *p = ' ';
+    if (isspace(*p)) *p = ' ';
 
   if (arg_to_timespec(arg, sizeof(arg), buf, sizeof(buf)) < 0)
     errx(EXIT_FAILURE, "error: invalid crontab timespec");
