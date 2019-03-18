@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Michael Santos <michael.santos@gmail.com>
+ * Copyright 2018-2019 Michael Santos <michael.santos@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,5 @@
  */
 #include "pseudocron.h"
 #ifdef PSEUDOCRON_SANDBOX_null
-    int
-sandbox_init()
-{
-  return 0;
-}
+int sandbox_init() { return 0; }
 #endif

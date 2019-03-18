@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Michael Santos <michael.santos@gmail.com>
+ * Copyright 2018-2019 Michael Santos <michael.santos@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,25 @@
 
 #define _XOPEN_SOURCE
 #define _XOPEN_SOURCE_EXTENDED 1
+#include <ctype.h>
+#include <err.h>
+#include <errno.h>
+#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <err.h>
-#include <getopt.h>
-#include <time.h>
 #include <string.h>
-#include <errno.h>
-#include <ctype.h>
+#include <time.h>
+#include <unistd.h>
 
 #include "ccronexpr.h"
 #include "pseudocron.h"
 
-#define PSEUDOCRON_VERSION "0.2.0"
+#define PSEUDOCRON_VERSION "0.3.0"
 
 static time_t timestamp(const char *s);
 static int fields(const char *s);
-static int arg_to_timespec(const char *arg, size_t arglen,
-    char *buf, size_t buflen);
+static int arg_to_timespec(const char *arg, size_t arglen, char *buf,
+                           size_t buflen);
 static const char *alias_to_timespec(const char *alias);
 static void usage();
 
@@ -43,39 +43,28 @@ extern char *__progname;
 static struct pseudocron_alias {
   const char *name;
   const char *timespec;
-} pseudocron_aliases[] = {
-  {"@reboot",   "0 * * * * *"},
-  {"@yearly",   "0 0 0 1 1 *"},
-  {"@annually", "0 0 0 1 1 *"},
-  {"@monthly",  "0 0 0 1 * *"},
-  {"@weekly",   "0 0 0 * * 0"},
-  {"@daily",    "0 0 0 * * *"},
-  {"@midnight", "0 0 0 * * *"},
-  {"@hourly",   "0 0 * * * *"},
-  {NULL,        NULL}
-};
+} pseudocron_aliases[] = {{"@reboot", "0 * * * * *"},
+                          {"@yearly", "0 0 0 1 1 *"},
+                          {"@annually", "0 0 0 1 1 *"},
+                          {"@monthly", "0 0 0 1 * *"},
+                          {"@weekly", "0 0 0 * * 0"},
+                          {"@daily", "0 0 0 * * *"},
+                          {"@midnight", "0 0 0 * * *"},
+                          {"@hourly", "0 0 * * * *"},
+                          {NULL, NULL}};
 
-enum {
-  OPT_STDIN = 1,
-  OPT_TIMESTAMP = 2,
-  OPT_PRINT = 4,
-  OPT_DRYRUN = 8
-};
+enum { OPT_STDIN = 1, OPT_TIMESTAMP = 2, OPT_PRINT = 4, OPT_DRYRUN = 8 };
 
-static const struct option long_options[] =
-{
-  {"stdin",       no_argument,        NULL, OPT_STDIN},
-  {"dryrun",      no_argument,        NULL, 'n'},
-  {"print",       no_argument,        NULL, 'p'},
-  {"timestamp",   required_argument,  NULL, OPT_TIMESTAMP},
-  {"verbose",     no_argument,        NULL, 'v'},
-  {"help",        no_argument,        NULL, 'h'},
-  {NULL,          0,                  NULL, 0}
-};
+static const struct option long_options[] = {
+    {"stdin", no_argument, NULL, OPT_STDIN},
+    {"dryrun", no_argument, NULL, 'n'},
+    {"print", no_argument, NULL, 'p'},
+    {"timestamp", required_argument, NULL, OPT_TIMESTAMP},
+    {"verbose", no_argument, NULL, 'v'},
+    {"help", no_argument, NULL, 'h'},
+    {NULL, 0, NULL, 0}};
 
-  int
-main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   cron_expr expr = {0};
   const char *errbuf = NULL;
   char buf[255] = {0};
@@ -101,31 +90,31 @@ main(int argc, char *argv[])
 
   while ((ch = getopt_long(argc, argv, "hnpv", long_options, NULL)) != -1) {
     switch (ch) {
-      case 'n':
-        opt |= OPT_DRYRUN;
-        break;
+    case 'n':
+      opt |= OPT_DRYRUN;
+      break;
 
-      case 'p':
-        opt |= OPT_PRINT;
-        break;
+    case 'p':
+      opt |= OPT_PRINT;
+      break;
 
-      case 'v':
-        verbose++;
-        break;
+    case 'v':
+      verbose++;
+      break;
 
-      case OPT_STDIN:
-        opt |= OPT_STDIN;
-        break;
+    case OPT_STDIN:
+      opt |= OPT_STDIN;
+      break;
 
-      case OPT_TIMESTAMP:
-        now = timestamp(optarg);
-        if (now == -1)
-          errx(EXIT_FAILURE, "error: invalid timestamp: %s", optarg);
-        break;
+    case OPT_TIMESTAMP:
+      now = timestamp(optarg);
+      if (now == -1)
+        errx(EXIT_FAILURE, "error: invalid timestamp: %s", optarg);
+      break;
 
-      case 'h':
-      default:
-        usage();
+    case 'h':
+    default:
+      usage();
     }
   }
 
@@ -133,36 +122,36 @@ main(int argc, char *argv[])
   argv += optind;
 
   switch (argc) {
-    case 0: {
-      char *nl = NULL;
+  case 0: {
+    char *nl = NULL;
 
-      if (!(opt & OPT_STDIN))
-        usage();
-
-      if (read(0, arg, sizeof(arg)-1) < 0)
-        err(EXIT_FAILURE, "error: read failure");
-
-      nl = strchr(arg, '\n');
-      if (nl != NULL)
-        *nl = '\0';
-      }
-      break;
-
-    case 1:
-      rv = snprintf(arg, sizeof(arg), "%s", argv[0]);
-      if (rv < 0 || rv >= sizeof(arg))
-        errx(EXIT_FAILURE, "error: timespec exceeds maximum length: %zu",
-            sizeof(arg));
-      break;
-
-    default:
+    if (!(opt & OPT_STDIN))
       usage();
-      break;
+
+    if (read(0, arg, sizeof(arg) - 1) < 0)
+      err(EXIT_FAILURE, "error: read failure");
+
+    nl = strchr(arg, '\n');
+    if (nl != NULL)
+      *nl = '\0';
+  } break;
+
+  case 1:
+    rv = snprintf(arg, sizeof(arg), "%s", argv[0]);
+    if (rv < 0 || rv >= sizeof(arg))
+      errx(EXIT_FAILURE, "error: timespec exceeds maximum length: %zu",
+           sizeof(arg));
+    break;
+
+  default:
+    usage();
+    break;
   }
 
   /* replace tabs with spaces */
   for (p = arg; *p != '\0'; p++)
-    if (isspace(*p)) *p = ' ';
+    if (isspace(*p))
+      *p = ' ';
 
   if (arg_to_timespec(arg, sizeof(arg), buf, sizeof(buf)) < 0)
     errx(EXIT_FAILURE, "error: invalid crontab timespec");
@@ -177,7 +166,7 @@ main(int argc, char *argv[])
   next = cron_next(&expr, now);
   if (next == -1)
     errx(EXIT_FAILURE, "error: cron_next: next scheduled interval: %s",
-            errno == 0 ? "invalid timespec" : strerror(errno));
+         errno == 0 ? "invalid timespec" : strerror(errno));
 
   if (verbose > 0) {
     (void)fprintf(stderr, "now[%lld]=%s", (long long)now, ctime(&now));
@@ -207,9 +196,7 @@ main(int argc, char *argv[])
   return 0;
 }
 
-  static int
-fields(const char *s)
-{
+static int fields(const char *s) {
   int n = 0;
   const char *p = s;
   int field = 0;
@@ -220,8 +207,7 @@ fields(const char *s)
         n++;
         field = 1;
       }
-    }
-    else {
+    } else {
       field = 0;
     }
   }
@@ -229,9 +215,8 @@ fields(const char *s)
   return n;
 }
 
-  static int
-arg_to_timespec(const char *arg, size_t arglen, char *buf, size_t buflen)
-{
+static int arg_to_timespec(const char *arg, size_t arglen, char *buf,
+                           size_t buflen) {
   const char *timespec;
   int n;
   int rv;
@@ -239,45 +224,43 @@ arg_to_timespec(const char *arg, size_t arglen, char *buf, size_t buflen)
   n = fields(arg);
 
   switch (n) {
-    case 1:
-      timespec = alias_to_timespec(arg);
+  case 1:
+    timespec = alias_to_timespec(arg);
 
-      if (timespec == NULL)
-        return -1;
+    if (timespec == NULL)
+      return -1;
 
-      rv = snprintf(buf, buflen, "%s", timespec);
-      break;
+    rv = snprintf(buf, buflen, "%s", timespec);
+    break;
 
-    case 5:
-      rv = snprintf(buf, buflen, "0 %s", arg);
-      break;
+  case 5:
+    rv = snprintf(buf, buflen, "0 %s", arg);
+    break;
 
-    case 6:
-    default:
-      rv = snprintf(buf, buflen, "%s", arg);
-      break;
+  case 6:
+  default:
+    rv = snprintf(buf, buflen, "%s", arg);
+    break;
   }
 
   return (rv < 0 || rv >= buflen) ? -1 : 0;
 }
 
-  static time_t
-timestamp(const char *s)
-{
+static time_t timestamp(const char *s) {
   struct tm tm = {0};
 
   switch (s[0]) {
-    case '@':
-      if (strptime(s+1, "%s", &tm) == NULL)
-        return -1;
+  case '@':
+    if (strptime(s + 1, "%s", &tm) == NULL)
+      return -1;
 
-      break;
+    break;
 
-    default:
-      if (strptime(s, "%Y-%m-%d %T", &tm) == NULL)
-        return -1;
+  default:
+    if (strptime(s, "%Y-%m-%d %T", &tm) == NULL)
+      return -1;
 
-      break;
+    break;
   }
 
   tm.tm_isdst = -1;
@@ -285,9 +268,7 @@ timestamp(const char *s)
   return mktime(&tm);
 }
 
-  static const char *
-alias_to_timespec(const char *name)
-{
+static const char *alias_to_timespec(const char *name) {
   struct pseudocron_alias *ap;
 
   for (ap = pseudocron_aliases; ap->name != NULL; ap++) {
@@ -299,17 +280,15 @@ alias_to_timespec(const char *name)
   return NULL;
 }
 
-  static void
-usage()
-{
-  errx(EXIT_FAILURE, "[OPTION] <CRONTAB EXPRESSION>\n"
-    "version: %s (using %s sandbox)\n\n"
-    "-n, --dryrun           do nothing\n"
-    "-p, --print            output seconds to next timespec\n"
-    "-v, --verbose          verbose mode\n"
-    "    --timestamp <YY-MM-DD hh-mm-ss|@epoch>\n"
-    "                       provide an initial time\n"
-    "    --stdin            read crontab from stdin\n",
-    PSEUDOCRON_VERSION,
-    PSEUDOCRON_SANDBOX);
+static void usage() {
+  errx(EXIT_FAILURE,
+       "[OPTION] <CRONTAB EXPRESSION>\n"
+       "version: %s (using %s sandbox)\n\n"
+       "-n, --dryrun           do nothing\n"
+       "-p, --print            output seconds to next timespec\n"
+       "-v, --verbose          verbose mode\n"
+       "    --timestamp <YY-MM-DD hh-mm-ss|@epoch>\n"
+       "                       provide an initial time\n"
+       "    --stdin            read crontab from stdin\n",
+       PSEUDOCRON_VERSION, PSEUDOCRON_SANDBOX);
 }
