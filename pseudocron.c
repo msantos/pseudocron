@@ -43,7 +43,7 @@ extern char *__progname;
 static struct pseudocron_alias {
   const char *name;
   const char *timespec;
-} pseudocron_aliases[] = {{"@reboot", "0 * * * * *"},
+} pseudocron_aliases[] = {{"@reboot", "* * * * * *"},
                           {"@yearly", "0 0 0 1 1 *"},
                           {"@annually", "0 0 0 1 1 *"},
                           {"@monthly", "0 0 0 1 * *"},
