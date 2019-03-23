@@ -65,6 +65,7 @@ crontab(5) aliases also work:
 				@daily         Run once a day, "0 0 * * *".
 				@midnight      (same as @daily)
 				@hourly        Run once an hour, "0 * * * *".
+				@never         Never run (sleep forever)
 
 # EXAMPLES
 

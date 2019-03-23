@@ -121,3 +121,12 @@ $output
 EOF
   [ "$status" -eq 1 ]
 }
+
+@test "crontab format: @never" {
+  run pseudocron -np "@never"
+cat << EOF
+$output
+EOF
+  [ "$status" -eq 0 ]
+  [ "$output" -eq 4294967295 ]
+}

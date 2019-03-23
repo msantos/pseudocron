@@ -51,6 +51,9 @@ static struct pseudocron_alias {
                           {"@daily", "0 0 0 * * *"},
                           {"@midnight", "0 0 0 * * *"},
                           {"@hourly", "0 0 * * * *"},
+
+                          {"@never", "@never"},
+
                           {NULL, NULL}};
 
 enum { OPT_STDIN = 1, OPT_TIMESTAMP = 2, OPT_PRINT = 4, OPT_DRYRUN = 8 };
@@ -159,6 +162,11 @@ int main(int argc, char *argv[]) {
   if (verbose > 1)
     (void)fprintf(stderr, "crontab=%s\n", buf);
 
+  if (strcmp(buf, "@never") == 0) {
+    diff = UINT32_MAX;
+    goto PSEUDOCRON_SLEEP;
+  }
+
   cron_parse_expr(buf, &expr, &errbuf);
   if (errbuf)
     errx(EXIT_FAILURE, "error: invalid crontab timespec: %s", errbuf);
@@ -177,6 +185,7 @@ int main(int argc, char *argv[]) {
   if (diff < 0)
     errx(EXIT_FAILURE, "error: difftime: negative duration: %.f seconds", diff);
 
+PSEUDOCRON_SLEEP:
   if (opt & OPT_PRINT)
     (void)printf("%.f\n", diff);
 
