@@ -162,7 +162,8 @@ int main(int argc, char *argv[]) {
   if (verbose > 1)
     (void)fprintf(stderr, "crontab=%s\n", buf);
 
-  if (strcmp(buf, "@never") == 0) {
+  if ((strcmp(buf, "@never") == 0) ||
+      (strcmp(arg, "@reboot") == 0 && getenv("PSEUDOCRON_REBOOT"))) {
     diff = UINT32_MAX;
     goto PSEUDOCRON_SLEEP;
   }

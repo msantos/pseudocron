@@ -130,3 +130,21 @@ EOF
   [ "$status" -eq 0 ]
   [ "$output" -eq 4294967295 ]
 }
+
+@test "crontab format: @reboot: first run" {
+  run pseudocron -np "@reboot"
+cat << EOF
+$output
+EOF
+  [ "$status" -eq 0 ]
+  [ "$output" -eq 1 ]
+}
+
+@test "crontab format: @reboot: next run" {
+  run env PSEUDOCRON_REBOOT=1 pseudocron -np "@reboot"
+cat << EOF
+$output
+EOF
+  [ "$status" -eq 0 ]
+  [ "$output" -eq 4294967295 ]
+}
