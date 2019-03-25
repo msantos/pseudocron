@@ -29,7 +29,7 @@
 #include "ccronexpr.h"
 #include "pseudocron.h"
 
-#define PSEUDOCRON_VERSION "0.3.0"
+#define PSEUDOCRON_VERSION "0.4.0"
 
 static time_t timestamp(const char *s);
 static int fields(const char *s);

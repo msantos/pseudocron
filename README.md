@@ -57,7 +57,7 @@ crontab(5) aliases also work:
 
 				string         meaning
 				------         -------
-				@reboot        Run once, at startup.
+				@reboot        Run once, at startup (see below).
 				@yearly        Run once a year, "0 0 1 1 *".
 				@annually      (same as @yearly)
 				@monthly       Run once a month, "0 0 1 * *".
@@ -66,6 +66,29 @@ crontab(5) aliases also work:
 				@midnight      (same as @daily)
 				@hourly        Run once an hour, "0 * * * *".
 				@never         Never run (sleep forever)
+
+## @reboot
+
+Unlike _crontab_(5), `pseudocron` will run the `@reboot` alias
+immediately.
+
+The behaviour can be mimicked by setting the `PSEUDOCRON_REBOOT`
+environment variable. If the variable is unset, `@reboot` is equivalent to
+`* * * * * *`.
+
+If set to any value, `@reboot` is equivalent to `@never`.
+
+~~~ shell
+#!/bin/sh
+
+while :; do
+    # runs in the next second
+    pseudocron "@reboot"
+    echo test
+    export PSEUDOCRON_REBOOT=1
+    # equivalent to sleep infinity
+done
+~~~
 
 # EXAMPLES
 
