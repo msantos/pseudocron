@@ -17,5 +17,10 @@
 #ifdef PSEUDOCRON_SANDBOX_pledge
 #include <unistd.h>
 
-int sandbox_init() { return pledge("stdio", NULL); }
+int sandbox_init() {
+  if (unveil("/", "") < 0)
+    return -1;
+
+  return pledge("stdio", NULL);
+}
 #endif
