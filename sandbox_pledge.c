@@ -18,9 +18,6 @@
 #include <unistd.h>
 
 int sandbox_init() {
-  if (unveil("/", "") < 0)
-    return -1;
-
   return pledge("stdio", NULL);
 }
 #endif
