@@ -1,5 +1,3 @@
-pseudocron - simple, safe, container-friendly cron alternative
-
 # SYNOPSIS
 
 pseudocron [-n|-p|-v] *crontab expression*
@@ -7,6 +5,8 @@ pseudocron [-n|-p|-v] *crontab expression*
 # DESCRIPTION
 
 pseudocron: sleep(1) using a cron expression
+
+Also see [runcron](https://github.com/msantos/runcron).
 
 cron expressions are parsed using
 [ccronexpr](https://github.com/staticlibs/ccronexpr).
@@ -183,6 +183,8 @@ problems with a sandbox.
     strace -o seccomp.trace ./pseudcron ...
 
 # ALTERNATIVES
+
+* [runcron](https://github.com/msantos/runcron)
 
 * [runwhen](http://code.dogmap.org/runwhen/)
 
