@@ -81,15 +81,15 @@ int main(int argc, char *argv[]) {
   int ch;
   int rv;
 
-  /* initialize local time before entering sandbox */
+  /* initialize local time before enabling process restrictions */
   now = time(NULL);
   if (now == -1)
     err(EXIT_FAILURE, "error: time");
 
   (void)localtime(&now);
 
-  if (sandbox_init() < 0)
-    err(3, "error: sandbox_init");
+  if (restrict_process_init() < 0)
+    err(3, "error: restrict_process_init");
 
   while ((ch = getopt_long(argc, argv, "hnpv", long_options, NULL)) != -1) {
     switch (ch) {
@@ -293,12 +293,12 @@ static const char *alias_to_timespec(const char *name) {
 static void usage() {
   errx(EXIT_FAILURE,
        "[OPTION] <CRONTAB EXPRESSION>\n"
-       "version: %s (using %s sandbox)\n\n"
+       "version: %s (using %s mode process restrition)\n\n"
        "-n, --dryrun           do nothing\n"
        "-p, --print            output seconds to next timespec\n"
        "-v, --verbose          verbose mode\n"
        "    --timestamp <YY-MM-DD hh-mm-ss|@epoch>\n"
        "                       provide an initial time\n"
        "    --stdin            read crontab from stdin\n",
-       PSEUDOCRON_VERSION, PSEUDOCRON_SANDBOX);
+       PSEUDOCRON_VERSION, RESTRICT_PROCESS);
 }

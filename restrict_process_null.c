@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 #include "pseudocron.h"
-#ifdef PSEUDOCRON_SANDBOX_pledge
-#include <unistd.h>
-
-int sandbox_init() {
-  return pledge("stdio", NULL);
-}
+#ifdef RESTRICT_PROCESS_null
+int restrict_process_init() { return 0; }
 #endif

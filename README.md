@@ -23,7 +23,7 @@ cron expressions are parsed using
 
     No setuid binaries or processes running as root.
 
-	pseudocron operations are sandboxed. It cannot open files
+	pseudocron operations are restricted. It cannot open files
 	or sockets or signal processes. The only ways pseudocron can
 	interact with other processes is via stdin/stdout/stderr and
 	the process exit value.
@@ -138,14 +138,14 @@ Writing a batch job:
 
 ## Selecting a Sandbox
 
-    PSEUDOCRON_SANDBOX=null make clean all
+    RESTRICT_PROCESS=null make clean all
 
 ## Using musl libc
 
-    ## Using the rlimit sandbox
-    PSEUDOCRON_SANDBOX=rlimit ./musl-make
+    ## Using the rlimit mode process restriction
+    RESTRICT_PROCESS=rlimit ./musl-make
 
-    ## linux seccomp sandbox: requires kernel headers
+    ## linux seccomp mode process restriction: requires kernel headers
 
     # clone the kernel headers somewhere
     cd /path/to/dir
@@ -156,8 +156,8 @@ Writing a batch job:
 
 ## Sandbox
 
-Setting the `PSEUDOCRON_SANDBOX` environment variable controls which
-sandbox is used. The available sandboxes are:
+Setting the `RESTRICT_PROCESS` environment variable controls which
+mode of process restriction is used. The available modes are:
 
 * seccomp: linux
 
@@ -169,17 +169,16 @@ sandbox is used. The available sandboxes are:
 
 * null: all
 
-For example, to force using the rlimit sandbox:
+For example, to force using the rlimit process restriction:
 
-    PSEUDOCRON_SANDBOX=rlimit make clean all
+    RESTRICT_PROCESS=rlimit make clean all
 
-The `null` sandbox disables sandboxing. It can be used for debugging
-problems with a sandbox.
+The `null` mode disables process restrictions and can be used for debugging.
 
-    PSEUDOCRON_SANDBOX=null make clean all
+    RESTRICT_PROCESS=null make clean all
     strace -o null.trace ./pseudcron ...
 
-    PSEUDOCRON_SANDBOX=seccomp make clean all
+    RESTRICT_PROCESS=seccomp make clean all
     strace -o seccomp.trace ./pseudcron ...
 
 # ALTERNATIVES

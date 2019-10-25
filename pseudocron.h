@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-int sandbox_init();
+int restrict_process_init();

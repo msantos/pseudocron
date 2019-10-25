@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 #include "pseudocron.h"
-#ifdef PSEUDOCRON_SANDBOX_rlimit
+#ifdef RESTRICT_PROCESS_rlimit
 #include <sys/resource.h>
 #include <time.h>
 
-int sandbox_init() {
+int restrict_process_init() {
   struct rlimit rl_zero = {0};
 
   if (setrlimit(RLIMIT_NPROC, &rl_zero) < 0)

@@ -3,11 +3,11 @@
 PROG=   pseudocron
 SRCS=   pseudocron.c \
         ccronexpr.c \
-        sandbox_null.c \
-        sandbox_rlimit.c \
-        sandbox_pledge.c \
-        sandbox_capsicum.c \
-        sandbox_seccomp.c
+        restrict_process_null.c \
+        restrict_process_rlimit.c \
+        restrict_process_pledge.c \
+        restrict_process_capsicum.c \
+        restrict_process_seccomp.c
 
 UNAME_SYS := $(shell uname -s)
 ifeq ($(UNAME_SYS), Linux)
@@ -16,21 +16,21 @@ ifeq ($(UNAME_SYS), Linux)
               -pie -fPIE \
               -fno-strict-aliasing
     LDFLAGS += -Wl,-z,relro,-z,now -Wl,-z,noexecstack
-	  PSEUDOCRON_SANDBOX ?= seccomp
+	  RESTRICT_PROCESS ?= seccomp
 else ifeq ($(UNAME_SYS), OpenBSD)
     CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
               -pie -fPIE \
               -fno-strict-aliasing
     LDFLAGS += -Wno-missing-braces -Wl,-z,relro,-z,now -Wl,-z,noexecstack
-    PSEUDOCRON_SANDBOX ?= pledge
+    RESTRICT_PROCESS ?= pledge
 else ifeq ($(UNAME_SYS), FreeBSD)
     CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
               -pie -fPIE \
               -fno-strict-aliasing
     LDFLAGS += -Wno-missing-braces -Wl,-z,relro,-z,now -Wl,-z,noexecstack
-    PSEUDOCRON_SANDBOX ?= capsicum
+    RESTRICT_PROCESS ?= capsicum
 else ifeq ($(UNAME_SYS), Darwin)
     CFLAGS ?= -D_FORTIFY_SOURCE=2 -O2 -fstack-protector-strong \
               -Wformat -Werror=format-security \
@@ -41,13 +41,13 @@ endif
 
 RM ?= rm
 
-PSEUDOCRON_SANDBOX ?= rlimit
+RESTRICT_PROCESS ?= rlimit
 PSEUDOCRON_CFLAGS ?= -g -Wall -fwrapv -pedantic
 
 CFLAGS += $(PSEUDOCRON_CFLAGS) \
           -DCRON_USE_LOCAL_TIME \
-          -DPSEUDOCRON_SANDBOX=\"$(PSEUDOCRON_SANDBOX)\" \
-          -DPSEUDOCRON_SANDBOX_$(PSEUDOCRON_SANDBOX)
+          -DRESTRICT_PROCESS=\"$(RESTRICT_PROCESS)\" \
+          -DRESTRICT_PROCESS_$(RESTRICT_PROCESS)
 
 LDFLAGS += $(PSEUDOCRON_LDFLAGS)
 

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 #include "pseudocron.h"
-#ifdef PSEUDOCRON_SANDBOX_seccomp
+#ifdef RESTRICT_PROCESS_seccomp
 #include <errno.h>
 #include <stddef.h>
 #include <sys/prctl.h>
@@ -73,7 +73,7 @@
 #define SECCOMP_AUDIT_ARCH 0
 #endif
 
-int sandbox_init() {
+int restrict_process_init() {
   struct sock_filter filter[] = {
       /* Ensure the syscall arch convention is as expected. */
       BPF_STMT(BPF_LD + BPF_W + BPF_ABS, offsetof(struct seccomp_data, arch)),

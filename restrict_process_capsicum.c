@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 #include "pseudocron.h"
-#ifdef PSEUDOCRON_SANDBOX_capsicum
+#ifdef RESTRICT_PROCESS_capsicum
 #include <sys/capability.h>
 #include <sys/param.h>
 #include <sys/resource.h>
@@ -23,7 +23,7 @@
 
 #include <errno.h>
 
-int sandbox_init() {
+int restrict_process_init() {
   struct rlimit rl = {0};
   cap_rights_t policy_read;
   cap_rights_t policy_write;
