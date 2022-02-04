@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Michael Santos <michael.santos@gmail.com>
+ * Copyright 2018-2022 Michael Santos <michael.santos@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdnoreturn.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
@@ -36,7 +37,7 @@ static int fields(const char *s);
 static int arg_to_timespec(const char *arg, size_t arglen, char *buf,
                            size_t buflen);
 static const char *alias_to_timespec(const char *alias);
-static void usage();
+static noreturn void usage(void);
 
 extern char *__progname;
 
@@ -141,14 +142,13 @@ int main(int argc, char *argv[]) {
 
   case 1:
     rv = snprintf(arg, sizeof(arg), "%s", argv[0]);
-    if (rv < 0 || rv >= sizeof(arg))
+    if (rv < 0 || (unsigned)rv >= sizeof(arg))
       errx(EXIT_FAILURE, "error: timespec exceeds maximum length: %zu",
            sizeof(arg));
     break;
 
   default:
     usage();
-    break;
   }
 
   /* replace tabs with spaces */
@@ -253,7 +253,7 @@ static int arg_to_timespec(const char *arg, size_t arglen, char *buf,
     break;
   }
 
-  return (rv < 0 || rv >= buflen) ? -1 : 0;
+  return (rv < 0 || (unsigned)rv >= buflen) ? -1 : 0;
 }
 
 static time_t timestamp(const char *s) {
@@ -290,7 +290,7 @@ static const char *alias_to_timespec(const char *name) {
   return NULL;
 }
 
-static void usage() {
+static noreturn void usage() {
   errx(EXIT_FAILURE,
        "[OPTION] <CRONTAB EXPRESSION>\n"
        "version: %s (using %s mode process restrition)\n\n"
