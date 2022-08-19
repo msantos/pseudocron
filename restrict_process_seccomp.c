@@ -1,4 +1,4 @@
-/* Copyright 2018-2019 Michael Santos <michael.santos@gmail.com>
+/* Copyright 2018-2022 Michael Santos <michael.santos@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,6 +101,9 @@ int restrict_process_init() {
 #ifdef __NR_clock_gettime
       SC_ALLOW(clock_gettime),
 #endif
+#ifdef __NR_clock_gettime64
+      SC_ALLOW(clock_gettime64),
+#endif
 #ifdef __NR_gettimeofday
       SC_ALLOW(gettimeofday),
 #endif
@@ -144,13 +147,14 @@ int restrict_process_init() {
       SC_ALLOW(restart_syscall),
 #endif
 
-#ifdef __TERMUX__
+#ifdef __NR_mmap
+      SC_ALLOW(mmap),
+#endif
 #ifdef __NR_mprotect
       SC_ALLOW(mprotect),
 #endif
 #ifdef __NR_munmap
       SC_ALLOW(munmap),
-#endif
 #endif
 
       /* Default deny */
