@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-export PSEUDOCRON_INCLUDE="${PSEUDOCRON_INCLUDE-/usr/local/lib}"
+export PSEUDOCRON_INCLUDE="${MUSL_INCLUDE-/usr/local/lib}"
 
 MACHTYPE="$(uname -m)"
 case "${MACHTYPE}" in

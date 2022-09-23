@@ -22,7 +22,6 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdnoreturn.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
@@ -30,14 +29,14 @@
 #include "ccronexpr.h"
 #include "pseudocron.h"
 
-#define PSEUDOCRON_VERSION "0.4.0"
+#define PSEUDOCRON_VERSION "0.4.1"
 
 static time_t timestamp(const char *s);
 static int fields(const char *s);
 static int arg_to_timespec(const char *arg, size_t arglen, char *buf,
                            size_t buflen);
 static const char *alias_to_timespec(const char *alias);
-static noreturn void usage(void);
+static void usage(void);
 
 extern char *__progname;
 
@@ -113,12 +112,15 @@ int main(int argc, char *argv[]) {
     case OPT_TIMESTAMP:
       now = timestamp(optarg);
       if (now == -1)
-        errx(EXIT_FAILURE, "error: invalid timestamp: %s", optarg);
+        errx(2, "error: invalid timestamp: %s", optarg);
       break;
 
     case 'h':
+      usage();
+      exit(0);
     default:
       usage();
+      exit(2);
     }
   }
 
@@ -129,8 +131,10 @@ int main(int argc, char *argv[]) {
   case 0: {
     char *nl = NULL;
 
-    if (!(opt & OPT_STDIN))
+    if (!(opt & OPT_STDIN)) {
       usage();
+      exit(2);
+    }
 
     if (read(0, arg, sizeof(arg) - 1) < 0)
       err(EXIT_FAILURE, "error: read failure");
@@ -149,6 +153,7 @@ int main(int argc, char *argv[]) {
 
   default:
     usage();
+    exit(2);
   }
 
   /* replace tabs with spaces */
@@ -290,15 +295,15 @@ static const char *alias_to_timespec(const char *name) {
   return NULL;
 }
 
-static noreturn void usage() {
-  errx(EXIT_FAILURE,
-       "[OPTION] <CRONTAB EXPRESSION>\n"
-       "version: %s (using %s mode process restrition)\n\n"
-       "-n, --dryrun           do nothing\n"
-       "-p, --print            output seconds to next timespec\n"
-       "-v, --verbose          verbose mode\n"
-       "    --timestamp <YY-MM-DD hh-mm-ss|@epoch>\n"
-       "                       provide an initial time\n"
-       "    --stdin            read crontab from stdin\n",
-       PSEUDOCRON_VERSION, RESTRICT_PROCESS);
+static void usage() {
+  (void)fprintf(stderr,
+                "%s: [OPTION] <CRONTAB EXPRESSION>\n"
+                "version: %s (using %s mode process restrition)\n\n"
+                "-n, --dryrun           do nothing\n"
+                "-p, --print            output seconds to next timespec\n"
+                "-v, --verbose          verbose mode\n"
+                "    --timestamp <YY-MM-DD hh-mm-ss|@epoch>\n"
+                "                       provide an initial time\n"
+                "    --stdin            read crontab from stdin\n",
+                __progname, PSEUDOCRON_VERSION, RESTRICT_PROCESS);
 }
