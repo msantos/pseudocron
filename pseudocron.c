@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 Michael Santos <michael.santos@gmail.com>
+ * Copyright 2018-2023 Michael Santos <michael.santos@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 #define _XOPEN_SOURCE
 #define _XOPEN_SOURCE_EXTENDED 1
-#include <ctype.h>
 #include <err.h>
 #include <errno.h>
 #include <getopt.h>
@@ -158,7 +157,7 @@ int main(int argc, char *argv[]) {
 
   /* replace tabs with spaces */
   for (p = arg; *p != '\0'; p++)
-    if (isspace(*p))
+    if (*p == '\t' || *p == '\n' || *p == '\r')
       *p = ' ';
 
   if (arg_to_timespec(arg, sizeof(arg), buf, sizeof(buf)) < 0)
