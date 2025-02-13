@@ -1,4 +1,4 @@
-/* Copyright 2018-2019 Michael Santos <michael.santos@gmail.com>
+/* Copyright 2018-2025 Michael Santos <michael.santos@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 
 #include <errno.h>
 
-int restrict_process_init() {
+int restrict_process_init(void) {
   struct rlimit rl = {0};
   cap_rights_t policy_read;
   cap_rights_t policy_write;
