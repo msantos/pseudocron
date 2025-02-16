@@ -1,5 +1,4 @@
-/*
- * Copyright 2018-2019 Michael Santos <michael.santos@gmail.com>
+/* Copyright 2018-2025 Michael Santos <michael.santos@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +17,7 @@
 #include <sys/resource.h>
 #include <time.h>
 
-int restrict_process_init() {
+int restrict_process_init(void) {
   struct rlimit rl_zero = {0};
 
   if (setrlimit(RLIMIT_NPROC, &rl_zero) < 0)
