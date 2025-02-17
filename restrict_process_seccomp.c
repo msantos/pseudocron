@@ -1,4 +1,4 @@
-/* Copyright 2018-2022 Michael Santos <michael.santos@gmail.com>
+/* Copyright 2018-2025 Michael Santos <michael.santos@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@
 #define SECCOMP_AUDIT_ARCH 0
 #endif
 
-int restrict_process_init() {
+int restrict_process_init(void) {
   struct sock_filter filter[] = {
       /* Ensure the syscall arch convention is as expected. */
       BPF_STMT(BPF_LD + BPF_W + BPF_ABS, offsetof(struct seccomp_data, arch)),
